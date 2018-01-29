@@ -1,0 +1,57 @@
+version: '3.1'
+
+volumes:
+  db_data:
+
+services:
+
+  dnsmasq:
+    image: andyshinn/dnsmasq:2.76
+    command: --log-facility=- --server=127.0.0.11 --server=193.10.57.11 --server=8.8.8.8 --server=172.16.0.72 --server=172.16.0.7 --neg-ttl=3600 --cache-size=1000 --max-cache-ttl=3600 --min-cache-ttl=3600 --all-servers
+    cap_add: 
+      - NET_ADMIN 
+    ports:
+      - 172.17.0.1:53:53/tcp
+      - 172.17.0.1:53:53/udp
+    links:
+      - proxy:wordpress.bioatlas.se
+
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./site.template:/etc/nginx/conf.d/site.template
+    environment:
+      - NGINX_MAX_BODY_SZ=100m
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/site.template > /etc/nginx/conf.d/bioatlas.conf && forego start -r"
+
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=wordpress
+    volumes:
+      - db_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - 8080:80
+    environment:
+      - VIRTUAL_HOST=wordpress.bioatlas.se
+      - VIRTUAL_PORT=80
+      - WORDPRESS_DB_PASSWORD=example
+      - WORDPRESS_DB_HOST=mysql:3306
+      - WORDPRESS_DB_USER=wordpress
+    volumes:
+      - ./themes/atlas/ala-wordpress-theme-master:/var/www/html/wp-content/themes/atlas
+
+
+
