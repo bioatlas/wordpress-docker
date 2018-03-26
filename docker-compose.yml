@@ -13,6 +13,8 @@ services:
     ports:
       - 172.17.0.1:53:53/tcp
       - 172.17.0.1:53:53/udp
+    depends_on:
+      - wordpress
     links:
       - proxy:wordpress.bioatlas.se
 
@@ -47,11 +49,11 @@ services:
     environment:
       - VIRTUAL_HOST=wordpress.bioatlas.se
       - VIRTUAL_PORT=80
-      - WORDPRESS_DB_PASSWORD=example
+      - WORDPRESS_DB_PASSWORD=wordpress
       - WORDPRESS_DB_HOST=mysql:3306
       - WORDPRESS_DB_USER=wordpress
     volumes:
-      - ./themes/atlas/ala-wordpress-theme-master:/var/www/html/wp-content/themes/atlas
+      - ./themes/atlas/bioatlas-wordpress-theme-master:/var/www/html/wp-content/themes/atlas
 
 
 

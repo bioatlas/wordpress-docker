@@ -5,7 +5,7 @@ all: theme-dl up
 theme-dl:
 	mkdir -p themes/atlas
 	cd themes/atlas && \
-		wget https://github.com/AtlasOfLivingAustralia/ala-wordpress-theme/archive/master.zip && \
+		wget https://github.com/bioatlas/bioatlas-wordpress-theme/archive/master.zip && \
 		unzip master.zip
 
 up:
