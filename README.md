@@ -11,7 +11,7 @@ First install certs in the `/certs` folder, for example wildcart certs for bioat
 Then download the Atlas theme, use `make theme-dl`, then issue `make up` to do it in two steps or use the `make` default target to execute these two targets in one step.
 
 
-## Wordpress
+## Wordpress intro
 
 These are steps for getting started from scratch:
 
@@ -22,6 +22,22 @@ These are steps for getting started from scratch:
 
 Then add content in Wordpress, access the admin functionality with:
 
-		firefox https://wordpress.bioatlas.se
+		firefox https://wordpress.bioatlas.se/wp-admin
 
+## Backup and restore
 
+For the wordpress instance, the state is kept in two places - the filesystem and in the database. A backup can be made from a running Wordpress instance. The backup archive files can then be migrated into a fresh instance and restored. 
+
+There are two Makefile targets for backing up and restoring state:
+
+		make backup
+		make restore
+
+The default latest backup files that are created at backup and used by default for restore use these names:
+
+		wordpress-db-latest.sql.gz
+		wordpress-files-latest.tgz
+
+In addition, timestamped archives are created. 
+
+You can adjust the Makefile if you need to use other filenames.
