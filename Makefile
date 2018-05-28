@@ -25,16 +25,16 @@ backup:
 		-u $(UID):$(GID) -v $(PWD):/tmp alpine \
 		sh -c "tar czf /tmp/wordpress-files-$(NOW).tgz -C /var/www/html ./"
 
-	docker exec wordpressdocker_mysql_1 bash -c \
+	docker exec wordpress-docker_mysql_1 bash -c \
 		"mysqldump -u wordpress -p'wordpress' -h 127.0.0.1 wordpress" | gzip > wordpress-db-$(NOW).sql.gz
 
 	cp wordpress-files-$(NOW).tgz wordpress-files-latest.tgz
 	cp wordpress-db-$(NOW).sql.gz wordpress-db-latest.sql.gz
 
 restore:
-	docker run --rm --volumes-from wordpressdocker_wordpress_1 \
+	docker run --rm --volumes-from wordpress-docker_wordpress_1 \
 		-v $(PWD):/tmp alpine \
 		sh -c "cd /var/www/html && tar xvf /tmp/wordpress-files-latest.tgz"
 
-	gunzip -c wordpress-db-latest.sql.gz | docker exec -i wordpressdocker_mysql_1 mysql -u wordpress -p'wordpress' -h 127.0.0.1 wordpress
+	gunzip -c wordpress-db-latest.sql.gz | docker exec -i wordpress-docker_mysql_1 mysql -u wordpress -p'wordpress' -h 127.0.0.1 wordpress
 
