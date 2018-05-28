@@ -21,7 +21,7 @@ down:
 	docker-compose down
 
 backup:
-	docker run --rm --volumes-from wordpressdocker_wordpress_1 \
+	docker run --rm --volumes-from wordpress-docker_wordpress_1 \
 		-u $(UID):$(GID) -v $(PWD):/tmp alpine \
 		sh -c "tar czf /tmp/wordpress-files-$(NOW).tgz -C /var/www/html ./"
 

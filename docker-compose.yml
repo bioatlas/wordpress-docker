@@ -54,6 +54,7 @@ services:
       - WORDPRESS_DB_USER=wordpress
     volumes:
       - ./themes/atlas/bioatlas-wordpress-theme-master:/var/www/html/wp-content/themes/atlas
+      - ./.htaccess:/var/www/html/.htaccess
 
 
 
